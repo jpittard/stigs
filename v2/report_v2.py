@@ -5,7 +5,7 @@ from dataclasses import dataclass, asdict, field
 from typing import Callable
 
 CHECKLIST_EXTENSION = 'ckl'
-SEVERITIES = {'low': 'CAT I', 'medium': 'CAT II', 'high': 'CAT III'}
+SEVERITIES = {'low': 'CAT III', 'medium': 'CAT II', 'high': 'CAT I'}
 CAT_LEVELS = {'CAT III': '3', 'CAT II': '2', 'CAT I': '1'}
 FIELDLIST = ['severity', 'vuln_id', 'rule_ver', 'file', 'rule_title', 'comments', 'finding_details']
 REPORT_NAME = 'report.csv'
@@ -49,8 +49,8 @@ def get_vulnerabilities(tree: ET, filename: str) -> list[Vuln]:
             fix_text=get_stig_data(vuln, 'Fix_Text'),
             cci=get_stig_data(vuln, 'CCI_REF'),
             status=get_element(vuln, 'STATUS'),
-            comments=get_element(vuln, 'FINDING_DETAILS'),
-            finding_details=get_element(vuln, 'COMMENTS')
+            comments=get_element(vuln, 'COMMENTS'),
+            finding_details=get_element(vuln, 'FINDING_DETAILS')
             )
         vulns.append(v)
     return vulns
@@ -85,7 +85,7 @@ def get_filtered_vulns(filename: str, filter_fcn: Callable) -> list[Vuln]:
     tree = ET.parse(f'{filename}')
     vulns = get_vulnerabilities(tree, filename)
     found = filter_fcn(vulns)
-    print(f'{filename}: {len(found)}')
+    print(f'{len(found)}\t{os.path.basename(filename)}')
     return found
 
 
@@ -108,7 +108,8 @@ def report(dirname: str, conditions: list[Callable]) -> None:
         print(f'Reporting on directory {dirname}')
         for filename in os.listdir(dirname):
             if not filename.endswith('.ckl'):
-                print(f'Skipping file {filename}')
+                if os.path.isfile(filename):
+                    print(f'Skipping file {filename}')
                 continue
             filtered = get_filtered_vulns(f'{dirname}/{filename}', filter)
             if filtered:
@@ -123,4 +124,4 @@ def report(dirname: str, conditions: list[Callable]) -> None:
     print('Done')
 
 
-report('../ckl', [is_open])
+report('/Users/jp/Library/CloudStorage/OneDrive-DataSystemsAnalysts,Inc/My Documents/_doc/I2AR/wrk/STIGS/Checklists-2025-03-14', [is_open])

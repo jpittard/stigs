@@ -13,6 +13,17 @@ FINDING_STMT = f'Erik Jensen validated on {FORMATTED_DATE} that the finding is'
 FILENAME_EXTENSION = 'ckl'
 FILENAME_PARTICLE = '_jp'
 AC2SP_SEPERATOR = '******** AC2SP Notations ********'
+QUESTIONS_FOR_OPEN = '''1. Why is it a finding?
+  
+2. What is the estimated fix date?
+  
+3. What resources are required to fix it?
+  
+4. How is this vulnerability mitigated?
+  
+5. What is the impact of this vulnerability?
+  '''
+
 
 def get_status_text(status):
     if status == 'NotAFinding':
@@ -54,7 +65,10 @@ def prepend_finding_statement(tree):
         else:
             lines = comment_node.text.split('\n')
             noblanks = [line for line in lines if line and line.strip()]
-            revised = f'{FINDING_STMT} {english_status}.\n{'\n'.join(noblanks)}'
+            if english_status == 'OPEN':
+                revised = f'{FINDING_STMT} {english_status}.\n{'\n'.join(noblanks)}\n{QUESTIONS_FOR_OPEN}'
+            else:
+                revised = f'{FINDING_STMT} {english_status}.\n{'\n'.join(noblanks)}'
         comment_node.text = revised
     return tree
 
