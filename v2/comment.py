@@ -10,8 +10,8 @@ def get_formatted_date():
 
 FORMATTED_DATE = get_formatted_date()
 FINDING_STMT = f'Erik Jensen validated on {FORMATTED_DATE} that the finding is'
-FILENAME_EXTENSION = 'ckl'
-FILENAME_PARTICLE = '_jp'
+CKL_EXTENSION = 'ckl'
+OUT_DIR = 'out'
 AC2SP_SEPERATOR = '******** AC2SP Notations ********'
 QUESTIONS_FOR_OPEN = '''1. Why is it a finding?
   
@@ -159,7 +159,7 @@ def write_revised_file(filename, fcn):
         print(f'  ERROR: {filename}:\n  {str(e)}')
         return
     
-    new_filename = os.path.splitext(os.path.basename(filename))[0] + f'{FILENAME_PARTICLE}.{FILENAME_EXTENSION}'
+    new_filename = os.path.splitext(f'{OUT_DIR}/{os.path.basename(filename)[0]}.{CKL_EXTENSION}')
     print(f'Writing {new_filename}')
     ET.indent(tree, space='\t', level=0)
     revised_tree.write(new_filename, encoding='utf-8', xml_declaration=True)
@@ -169,12 +169,12 @@ def write_all(dirname, fcn):
     if os.path.isdir(dirname):
         print(f'Processing directory {dirname}')
         for filename in os.listdir(dirname):
-            if not filename.endswith('.' + FILENAME_EXTENSION) or filename.endswith(f'{FILENAME_PARTICLE}.{FILENAME_EXTENSION}'):
+            if not filename.endswith('.' + CKL_EXTENSION)):
                 print(f'Skipping file {filename}')
                 continue
             write_revised_file(f'{dirname}/{filename}', fcn)
     else:
-        print(f'Processing file {dirname}')
+        print(f'Processing file {dirname}')ß
         write_revised_file(dirname, fcn)
     print('Done')
 

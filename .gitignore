@@ -1,4 +1,5 @@
 .venv/
+out/
 *.zip
 *.csv
 *.ckl

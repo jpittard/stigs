@@ -8,7 +8,7 @@ CHECKLIST_EXTENSION = 'ckl'
 SEVERITIES = {'low': 'CAT III', 'medium': 'CAT II', 'high': 'CAT I'}
 CAT_LEVELS = {'CAT III': '3', 'CAT II': '2', 'CAT I': '1'}
 FIELDLIST = ['severity', 'vuln_id', 'rule_ver', 'file', 'rule_title', 'comments', 'finding_details']
-REPORT_NAME = 'report.csv'
+REPORT_NAME = 'checklist_statuses.csv'
 
 
 @dataclass(order=True, frozen=True)
@@ -74,12 +74,14 @@ def get_stig_data(vuln: Vuln, key: str) -> str:
         return ''
     return attr.text
 
+
 def get_element(vuln: Vuln, key: str) -> str:
     attr = vuln.find(key)
     if attr is None:
         print(f'No key found for \'{key}\'')
         return ''
     return attr.text
+
 
 def get_filtered_vulns(filename: str, filter_fcn: Callable) -> list[Vuln]:
     tree = ET.parse(f'{filename}')
